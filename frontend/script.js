@@ -122,10 +122,28 @@ function addMessage(content, type, sources = null, isWelcome = false) {
     let html = `<div class="message-content">${displayContent}</div>`;
     
     if (sources && sources.length > 0) {
+        // Handle sources - they can be either strings or objects with display/link
+        const sourcesHtml = sources.map(source => {
+            if (typeof source === 'string') {
+                // Backwards compatibility for plain string sources
+                return `<div class="source-item">${escapeHtml(source)}</div>`;
+            } else if (source && typeof source === 'object') {
+                // New format with display text and optional link
+                const displayText = escapeHtml(source.display || 'Unknown Source');
+                if (source.link) {
+                    return `<div class="source-item"><a href="${escapeHtml(source.link)}" target="_blank" class="source-link">${displayText}</a></div>`;
+                } else {
+                    return `<div class="source-item">${displayText}</div>`;
+                }
+            } else {
+                return '<div class="source-item">Unknown Source</div>';
+            }
+        }).join('');
+        
         html += `
             <details class="sources-collapsible">
                 <summary class="sources-header">Sources</summary>
-                <div class="sources-content">${sources.join(', ')}</div>
+                <div class="sources-content">${sourcesHtml}</div>
             </details>
         `;
     }
@@ -171,8 +189,26 @@ async function loadCourseStats() {
         if (courseTitles) {
             if (data.course_titles && data.course_titles.length > 0) {
                 courseTitles.innerHTML = data.course_titles
-                    .map(title => `<div class="course-title-item">${title}</div>`)
+                    .map(title => `<div class="course-title-item" data-course="${title}" tabindex="0">${title}</div>`)
                     .join('');
+                
+                // Add click and keyboard event listeners to course title items
+                document.querySelectorAll('.course-title-item').forEach(item => {
+                    const handleInteraction = (e) => {
+                        const courseTitle = e.target.getAttribute('data-course');
+                        const question = `What is the outline of the "${courseTitle}" course?`;
+                        chatInput.value = question;
+                        sendMessage();
+                    };
+                    
+                    item.addEventListener('click', handleInteraction);
+                    item.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleInteraction(e);
+                        }
+                    });
+                });
             } else {
                 courseTitles.innerHTML = '<span class="no-courses">No courses available</span>';
             }
