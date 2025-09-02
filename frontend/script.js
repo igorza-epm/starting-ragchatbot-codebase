@@ -5,7 +5,7 @@ const API_URL = '/api';
 let currentSessionId = null;
 
 // DOM elements
-let chatMessages, chatInput, sendButton, totalCourses, courseTitles;
+let chatMessages, chatInput, sendButton, totalCourses, courseTitles, newChatButton;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     sendButton = document.getElementById('sendButton');
     totalCourses = document.getElementById('totalCourses');
     courseTitles = document.getElementById('courseTitles');
+    newChatButton = document.getElementById('newChatButton');
     
     setupEventListeners();
     createNewSession();
@@ -28,6 +29,9 @@ function setupEventListeners() {
     chatInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
+    
+    // New Chat button
+    newChatButton.addEventListener('click', clearCurrentChat);
     
     
     // Suggested questions
@@ -168,6 +172,36 @@ async function createNewSession() {
     currentSessionId = null;
     chatMessages.innerHTML = '';
     addMessage('Welcome to the Course Materials Assistant! I can help you with questions about courses, lessons and specific content. What would you like to know?', 'assistant', null, true);
+}
+
+// Clear current chat and start fresh
+async function clearCurrentChat() {
+    // Clear session on backend if we have one
+    if (currentSessionId) {
+        try {
+            await fetch(`${API_URL}/session/${currentSessionId}`, {
+                method: 'DELETE'
+            });
+        } catch (error) {
+            console.warn('Failed to clear session on backend:', error);
+            // Continue anyway - frontend will still clear
+        }
+    }
+    
+    // Reset frontend state
+    currentSessionId = null;
+    chatMessages.innerHTML = '';
+    
+    // Re-enable input if it was disabled
+    chatInput.disabled = false;
+    sendButton.disabled = false;
+    chatInput.value = '';
+    
+    // Show welcome message
+    addMessage('Welcome to the Course Materials Assistant! I can help you with questions about courses, lessons and specific content. What would you like to know?', 'assistant', null, true);
+    
+    // Focus input for immediate use
+    chatInput.focus();
 }
 
 // Load course statistics
