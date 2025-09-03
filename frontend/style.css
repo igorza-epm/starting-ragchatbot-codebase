@@ -694,9 +694,9 @@ details[open] .suggested-header::before {
 .new-chat-button {
     width: 100%;
     padding: 0.875rem 1rem;
-    background: var(--primary-color);
-    color: white;
-    border: none;
+    background: var(--surface);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     font-size: 0.875rem;
     font-weight: 600;
@@ -705,23 +705,24 @@ details[open] .suggested-header::before {
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
 }
 
 .new-chat-button:focus {
     outline: none;
+    border-color: var(--primary-color);
+    color: var(--primary-color);
     box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .new-chat-button:hover {
-    background: var(--primary-hover);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    background: var(--surface-hover);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 .new-chat-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    background: var(--surface);
+    transform: none;
 }
 
 /* Suggested Questions in Sidebar */
