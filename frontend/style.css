@@ -5,7 +5,7 @@
     padding: 0;
 }
 
-/* CSS Variables */
+/* CSS Variables - Dark Theme (Default) */
 :root {
     --primary-color: #2563eb;
     --primary-hover: #1d4ed8;
@@ -21,6 +21,25 @@
     --radius: 12px;
     --focus-ring: rgba(37, 99, 235, 0.2);
     --welcome-bg: #1e3a5f;
+    --welcome-border: #2563eb;
+}
+
+/* Light Theme Variables */
+[data-theme="light"] {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --background: #ffffff;
+    --surface: #f8fafc;
+    --surface-hover: #e2e8f0;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --user-message: #2563eb;
+    --assistant-message: #f1f5f9;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --radius: 12px;
+    --focus-ring: rgba(37, 99, 235, 0.2);
+    --welcome-bg: #f0f8ff;
     --welcome-border: #2563eb;
 }
 
@@ -46,9 +65,25 @@ body {
     padding: 0;
 }
 
-/* Header - Hidden */
+/* Header */
 header {
-    display: none;
+    display: block;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 2rem;
+    flex-shrink: 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header-text {
+    flex: 1;
 }
 
 header h1 {
@@ -758,6 +793,54 @@ details[open] .suggested-header::before {
     transform: translateX(2px);
 }
 
+/* Theme Toggle Button */
+.theme-toggle {
+    padding: 0.625rem;
+    background: var(--background);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    position: relative;
+    min-width: 44px;
+    min-height: 44px;
+}
+
+.theme-toggle:hover {
+    background: var(--surface-hover);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+}
+
+.theme-toggle:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.theme-toggle:active {
+    transform: translateY(0);
+}
+
+.theme-toggle svg {
+    transition: all 0.3s ease;
+}
+
+/* Icon visibility based on theme */
+[data-theme="light"] .theme-toggle .sun-icon {
+    display: none;
+}
+
+[data-theme="light"] .theme-toggle .moon-icon {
+    display: block !important;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .main-content {
@@ -800,6 +883,16 @@ details[open] .suggested-header::before {
     
     header h1 {
         font-size: 1.5rem;
+    }
+    
+    .header-content {
+        gap: 1rem;
+    }
+    
+    .theme-toggle {
+        padding: 0.5rem;
+        min-width: 40px;
+        min-height: 40px;
     }
     
     .chat-messages {
