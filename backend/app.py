@@ -114,7 +114,20 @@ async def clear_session(session_id: str):
 
 @app.on_event("startup")
 async def startup_event():
-    """Load initial documents on startup"""
+    """Validate configuration and load initial documents on startup"""
+    # Validate API key first
+    try:
+        config.validate_api_key()
+        print("✅ API key validation successful")
+    except ValueError as e:
+        print(e)
+        print("\n🔴 Application startup failed due to missing or invalid API key.")
+        print("Please configure your API key and restart the application.\n")
+        # Exit with error code
+        import sys
+        sys.exit(1)
+
+    # Load initial documents
     docs_path = "../docs"
     if os.path.exists(docs_path):
         print("Loading initial documents...")

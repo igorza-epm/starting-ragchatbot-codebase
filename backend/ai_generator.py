@@ -32,9 +32,27 @@ Provide only the direct answer to what was asked.
 """
     
     def __init__(self, api_key: str, model: str):
-        self.client = anthropic.Anthropic(api_key=api_key)
+        # Validate API key before initializing client
+        if not api_key:
+            raise ValueError(
+                "API key is required for AIGenerator. "
+                "Please ensure ANTHROPIC_API_KEY is set in your environment."
+            )
+
+        if not api_key.startswith('sk-ant-'):
+            import sys
+            print(
+                "⚠️  Warning: API key may be invalid (should start with 'sk-ant-')",
+                file=sys.stderr
+            )
+
+        try:
+            self.client = anthropic.Anthropic(api_key=api_key)
+        except Exception as e:
+            raise ValueError(f"Failed to initialize Anthropic client: {str(e)}")
+
         self.model = model
-        
+
         # Pre-build base API parameters
         self.base_params = {
             "model": self.model,
